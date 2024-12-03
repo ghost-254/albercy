@@ -1,12 +1,17 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from "framer-motion"
 import { Wrench, Battery, Wifi, Cpu, Compass, CircleDot, Car, Cog, Flame, ShoppingCart, Phone, Mail, MapPin, Globe, Clock, Users } from 'lucide-react'
 import { NotificationBanner } from '../components/NotificationBanner';
 import '@/styles/fonts.css';
+import { Menu } from 'lucide-react';
+import { ContactPopup } from '../components/ContactPopup'
 
 export default function AlbercyLandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isContactPopupOpen, setIsContactPopupOpen] = useState(false);
+
   const services = [
     {
       name: "Generator repair",
@@ -80,17 +85,31 @@ export default function AlbercyLandingPage() {
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex flex-col items-start">
             <div className="flex items-center space-x-2 p-2">
-              <img src="/logoalbercy.png" alt="Company Logo" className="h-14 w-auto"/>
+              <img src="/logoalbercy.png" alt="Company Logo" className="h-10 w-auto md:h-14"/>
             </div>
           </div>
-          <nav>
+          <nav className="hidden md:block">
             <ul className="flex space-x-4 font-['Orbitron'] text-sm">
               <li><a href="#" className="hover:text-[#5900ff] transition-colors">Home</a></li>
               <li><a href="#services" className="hover:text-[#5900ff] transition-colors">Services</a></li>
               <li><a href="#contact" className="hover:text-[#5900ff] transition-colors">Contact</a></li>
             </ul>
           </nav>
+          <div className="md:hidden">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-[#5900ff]">
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
         </div>
+        {isMenuOpen && (
+          <div className="md:hidden bg-white shadow-md">
+            <ul className="flex flex-col space-y-2 p-4 font-['Orbitron'] text-sm">
+              <li><a href="#" className="hover:text-[#5900ff] transition-colors">Home</a></li>
+              <li><a href="#services" className="hover:text-[#5900ff] transition-colors">Services</a></li>
+              <li><a href="#contact" className="hover:text-[#5900ff] transition-colors">Contact</a></li>
+            </ul>
+          </div>
+        )}
       </header>
 
       <main className="mx-auto px-4 py-12">
@@ -109,9 +128,12 @@ export default function AlbercyLandingPage() {
             While we enhance our online offerings, our physical location remains fully operational. 
             Visit us for the same great service you've always known!
           </p>
-          <div className="inline-block bg-white text-[#5900ff] px-6 py-3 rounded-full font-semibold hover:bg-blue-100 transition-colors">
+          <button
+            onClick={() => setIsContactPopupOpen(true)}
+            className="inline-block bg-white text-[#5900ff] px-6 py-3 rounded-full font-semibold hover:bg-blue-100 transition-colors"
+          >
             Get Notified at Launch
-          </div>
+          </button>
         </motion.section>
 
         <motion.section 
@@ -201,6 +223,7 @@ export default function AlbercyLandingPage() {
           <p className="text-sm">&copy; 2024 Albercy Auto Clinic. All rights reserved.</p>
         </div>
       </footer>
+      <ContactPopup isOpen={isContactPopupOpen} onClose={() => setIsContactPopupOpen(false)} />
     </div>
   )
 }
