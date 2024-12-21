@@ -1,16 +1,14 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { motion } from "framer-motion"
-import { Wrench, Battery, Wifi, Cpu, Compass, CircleDot, Car, Cog, Flame, ShoppingCart, Phone, Mail, MapPin, Globe, Clock, Users } from 'lucide-react'
-import { NotificationBanner } from '../components/NotificationBanner';
-import '@/styles/fonts.css';
-import { Menu } from 'lucide-react';
-import { ContactPopup } from '../components/ContactPopup'
+import { Battery, Wifi, Cpu, Compass, CircleDot, Car, Cog, Flame, ShoppingCart, Phone, Mail, MapPin, Globe, Clock, Users } from 'lucide-react'
+import { ContactPopup } from '@/components/ContactPopup'
+import { HeroSection } from '@/components/HeroSection'
+import '@/styles/fonts.css'
 
 export default function AlbercyLandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isContactPopupOpen, setIsContactPopupOpen] = useState(false);
+  const [isContactPopupOpen, setIsContactPopupOpen] = React.useState(false);
 
   const services = [
     {
@@ -73,69 +71,16 @@ export default function AlbercyLandingPage() {
     },
     {
       title: "Online Booking",
-      description: "Coming soon: Schedule your service appointments online with ease.",
+      description: "Schedule your service appointments online with ease.",
       icon: Globe
     }
   ]
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white text-gray-800">
-      <NotificationBanner />
-      <header className="bg-white shadow-md sticky top-[32px] z-10">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="flex flex-col items-start">
-            <div className="flex items-center space-x-2 p-2">
-              <img src="/logoalbercy.png" alt="Company Logo" className="h-10 w-auto md:h-14"/>
-            </div>
-          </div>
-          <nav className="hidden md:block">
-            <ul className="flex space-x-4 font-['Orbitron'] text-sm">
-              <li><a href="#" className="hover:text-[#5900ff] transition-colors">Home</a></li>
-              <li><a href="#services" className="hover:text-[#5900ff] transition-colors">Services</a></li>
-              <li><a href="#contact" className="hover:text-[#5900ff] transition-colors">Contact</a></li>
-            </ul>
-          </nav>
-          <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-[#5900ff]">
-              <Menu className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-        {isMenuOpen && (
-          <div className="md:hidden bg-white shadow-md">
-            <ul className="flex flex-col space-y-2 p-4 font-['Orbitron'] text-sm">
-              <li><a href="#" className="hover:text-[#5900ff] transition-colors">Home</a></li>
-              <li><a href="#services" className="hover:text-[#5900ff] transition-colors">Services</a></li>
-              <li><a href="#contact" className="hover:text-[#5900ff] transition-colors">Contact</a></li>
-            </ul>
-          </div>
-        )}
-      </header>
+      <HeroSection />
 
-      <main className="mx-auto px-4 py-12">
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16 bg-[#5900ff] text-white py-16 rounded-lg shadow-lg"
-        >
-          <h2 className="text-4xl font-bold mb-4 font-['Orbitron']">Expanding Our Online Presence</h2>
-          <p className="text-xl mb-8">
-            We're working hard to bring our top-notch automotive solutions online. 
-            Stay tuned for exciting digital services coming your way!
-          </p>
-          <p className="text-lg mb-8">
-            While we enhance our online offerings, our physical location remains fully operational. 
-            Visit us for the same great service you've always known!
-          </p>
-          <button
-            onClick={() => setIsContactPopupOpen(true)}
-            className="inline-block bg-white text-[#5900ff] px-6 py-3 rounded-full font-semibold hover:bg-blue-100 transition-colors"
-          >
-            Get Notified at Launch
-          </button>
-        </motion.section>
-
+      <div className="container mx-auto px-4 py-12">
         <motion.section 
           id="services"
           initial={{ opacity: 0 }}
@@ -216,14 +161,12 @@ export default function AlbercyLandingPage() {
             </div>
           </div>
         </motion.section>
-      </main>
+      </div>
 
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm">&copy; 2024 Albercy Auto Clinic. All rights reserved.</p>
-        </div>
-      </footer>
-      <ContactPopup isOpen={isContactPopupOpen} onClose={() => setIsContactPopupOpen(false)} />
+      <ContactPopup
+        isOpen={isContactPopupOpen}
+        onClose={() => setIsContactPopupOpen(false)}
+      />
     </div>
   )
 }

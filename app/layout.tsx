@@ -1,11 +1,15 @@
 import './globals.css'
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { ToastContainer } from 'react-toastify'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
-  title: 'Albercy - Automotive Solutions',
-  description: 'Your trusted partner for all automotive needs. Coming soon!',
+export const metadata: Metadata = {
+  title: 'Albercy Auto Clinic',
+  description: 'No. 1 Expert Auto Repair and Maintenance Services in Nairobi, Kenya',
 }
 
 export default function RootLayout({
@@ -15,7 +19,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
+        <Header />
+        <main className="flex-grow pt-16">
+          {children}
+        </main>
+        <Footer />
+        <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnHover draggable />
+      </body>
     </html>
   )
 }
