@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaCar, FaTools, FaClock } from 'react-icons/fa'
+import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa'
 import { MdDirectionsCar, MdBuild } from 'react-icons/md'
 import emailjs from '@emailjs/browser'
 import { toast } from 'react-toastify'
@@ -11,9 +11,26 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  vehicleMake: string;
+  vehicleModel: string;
+  vehicleYear: string;
+  serviceType: string;
+  message: string;
+}
+
+interface FormErrors {
+  [key: string]: string;
+}
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     phone: '',
@@ -24,28 +41,61 @@ export default function ContactPage() {
     message: '',
   })
 
+  const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [showSummary, setShowSummary] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { name: string; value: string } }) => {
     const { name, value } = e.target
     setFormData(prevState => ({
       ...prevState,
       [name]: value
     }))
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prevErrors => ({ ...prevErrors, [name]: '' }))
+    }
+  }
+
+  const validateForm = () => {
+    const newErrors: FormErrors = {}
+    if (!formData.name.trim()) newErrors.name = 'Name is required'
+    if (!formData.email.trim()) newErrors.email = 'Email is required'
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid'
+    if (!formData.phone.trim()) newErrors.phone = 'Phone is required'
+    if (!formData.vehicleMake.trim()) newErrors.vehicleMake = 'Vehicle make is required'
+    if (!formData.vehicleModel.trim()) newErrors.vehicleModel = 'Vehicle model is required'
+    if (!formData.vehicleYear.trim()) newErrors.vehicleYear = 'Vehicle year is required'
+    if (!formData.serviceType) newErrors.serviceType = 'Service type is required'
+    if (!formData.message.trim()) newErrors.message = 'Message is required'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
+    if (validateForm()) {
+      setShowConfirmation(true)
+    }
+  }
 
+  const sendEmail = async () => {
+    setIsSubmitting(true)
     try {
+      // Send email to Albercy Auto Clinic
       await emailjs.send(
-        'YOUR_SERVICE_ID',
-        'YOUR_TEMPLATE_ID',
-        formData,
-        'YOUR_USER_ID'
+        'service_0yqhktj',
+        'template_avxi814',
+        {
+          ...formData,
+          submission_date: new Date().toLocaleString(),
+        },
+        'tu6heFgClZ_X5uU3Z'
       )
-      toast.success('Your message has been sent successfully!', {
+
+      toast.success('Your request has been submitted successfully!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -54,6 +104,7 @@ export default function ContactPage() {
         draggable: true,
         progress: undefined,
       })
+      setShowSummary(true)
       setFormData({
         name: '',
         email: '',
@@ -77,6 +128,7 @@ export default function ContactPage() {
       })
     } finally {
       setIsSubmitting(false)
+      setShowConfirmation(false)
     }
   }
 
@@ -126,7 +178,7 @@ export default function ContactPage() {
             <Card className="bg-white shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center font-['Orbitron'] text-[#5900ff]">
-                  <FaClock className="mr-2" /> Business Hours
+                  <FaEnvelope className="mr-2" /> Business Hours
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -151,86 +203,86 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+                    <Label htmlFor="name" className="block text-sm font-medium mb-1">Name</Label>
                     <Input
                       type="text"
                       id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff]"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff] ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+                    <Label htmlFor="email" className="block text-sm font-medium mb-1">Email</Label>
                     <Input
                       type="email"
                       id="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff]"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff] ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</label>
+                    <Label htmlFor="phone" className="block text-sm font-medium mb-1">Phone</Label>
                     <Input
                       type="tel"
                       id="phone"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff]"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff] ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                   </div>
                   <div>
-                    <label htmlFor="vehicleMake" className="block text-sm font-medium mb-1">Vehicle Make</label>
+                    <Label htmlFor="vehicleMake" className="block text-sm font-medium mb-1">Vehicle Make</Label>
                     <Input
                       type="text"
                       id="vehicleMake"
                       name="vehicleMake"
                       value={formData.vehicleMake}
                       onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff]"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff] ${errors.vehicleMake ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.vehicleMake && <p className="text-red-500 text-xs mt-1">{errors.vehicleMake}</p>}
                   </div>
                   <div>
-                    <label htmlFor="vehicleModel" className="block text-sm font-medium mb-1">Vehicle Model</label>
+                    <Label htmlFor="vehicleModel" className="block text-sm font-medium mb-1">Vehicle Model</Label>
                     <Input
                       type="text"
                       id="vehicleModel"
                       name="vehicleModel"
                       value={formData.vehicleModel}
                       onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff]"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff] ${errors.vehicleModel ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.vehicleModel && <p className="text-red-500 text-xs mt-1">{errors.vehicleModel}</p>}
                   </div>
                   <div>
-                    <label htmlFor="vehicleYear" className="block text-sm font-medium mb-1">Vehicle Year</label>
+                    <Label htmlFor="vehicleYear" className="block text-sm font-medium mb-1">Vehicle Year</Label>
                     <Input
                       type="number"
                       id="vehicleYear"
                       name="vehicleYear"
                       value={formData.vehicleYear}
                       onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff]"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff] ${errors.vehicleYear ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.vehicleYear && <p className="text-red-500 text-xs mt-1">{errors.vehicleYear}</p>}
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="serviceType" className="block text-sm font-medium mb-1">Service Type</label>
+                  <Label htmlFor="serviceType" className="block text-sm font-medium mb-1">Service Type</Label>
                   <Select
                     name="serviceType"
                     value={formData.serviceType}
-                    onValueChange={(value) => handleChange({ target: { name: 'serviceType', value } } as React.ChangeEvent<HTMLSelectElement>)}
+                    onValueChange={(value) => handleChange({ target: { name: 'serviceType', value } })}
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className={`w-full ${errors.serviceType ? 'border-red-500' : ''}`}>
                       <SelectValue placeholder="Select a service" />
                     </SelectTrigger>
                     <SelectContent>
@@ -246,17 +298,19 @@ export default function ContactPage() {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.serviceType && <p className="text-red-500 text-xs mt-1">{errors.serviceType}</p>}
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
+                  <Label htmlFor="message" className="block text-sm font-medium mb-1">Message</Label>
                   <Textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff]"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-[#5900ff] focus:border-[#5900ff] ${errors.message ? 'border-red-500' : 'border-gray-300'}`}
                   />
+                  {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
                 </div>
                 <Button
                   type="submit"
@@ -269,6 +323,31 @@ export default function ContactPage() {
             </CardContent>
           </Card>
         </motion.div>
+
+        <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Submission</DialogTitle>
+              <DialogDescription>
+                Please review your information before submitting:
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2">
+              <p><strong>Name:</strong> {formData.name}</p>
+              <p><strong>Email:</strong> {formData.email}</p>
+              <p><strong>Phone:</strong> {formData.phone}</p>
+              <p><strong>Vehicle:</strong> {formData.vehicleYear} {formData.vehicleMake} {formData.vehicleModel}</p>
+              <p><strong>Service Type:</strong> {formData.serviceType}</p>
+              <p><strong>Message:</strong> {formData.message}</p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowConfirmation(false)}>Cancel</Button>
+              <Button onClick={sendEmail} disabled={isSubmitting}>
+                {isSubmitting ? 'Sending...' : 'Confirm and Send'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
           <motion.div 
@@ -313,7 +392,7 @@ export default function ContactPage() {
             <Card className="bg-gradient-to-br from-[#5900ff] to-[#4600c7] text-white shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center font-['Orbitron']">
-                  <FaCar className="mr-2 text-2xl" /> Comprehensive Services
+                  <FaEnvelope className="mr-2 text-2xl" /> Comprehensive Services
                 </CardTitle>
               </CardHeader>
               <CardContent>

@@ -99,3 +99,15 @@
   color: #f0f0f0;
 }
 
+/* WhatsApp Chat Icon Styles */
+.floating-whatsapp-container {
+  z-index: 9999 !important;
+}
+
+@media (max-width: 768px) {
+  .floating-whatsapp-container {
+    bottom: 70px !important;
+    right: 10px !important;
+  }
+}
+
