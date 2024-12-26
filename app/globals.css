@@ -102,6 +102,12 @@
 /* WhatsApp Chat Icon Styles */
 .floating-whatsapp-container {
   z-index: 9999 !important;
+  bottom: 20px !important;
+  right: 20px !important;
+}
+
+.floating-whatsapp-message-box {
+  z-index: 10000 !important;
 }
 
 @media (max-width: 768px) {

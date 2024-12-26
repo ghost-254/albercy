@@ -89,19 +89,13 @@ export default function AlbercyLandingPage() {
       description: "Comprehensive car servicing to keep your vehicle in top condition.",
       icon: Car,
       images: [
-        "/car1.jpg",
-        "/car2.jpg",
-        "/car3.jpg",
-        "/car4.jpg",
-        "/car5.jpg",
-        "/car6.jpg",
-        "/car7.jpg",
-        "/car8.jpg",
-        "/car9.jpg",
-        "/car10.jpg",
-        "/car11.jpg",
-        "/car12.jpg",
-        "/car13.jpg"
+        "/serv1.jpeg",
+        "/serv2.jpg",
+        "/serv3.webp",
+        "/serv4.jpg",
+        "/serv5.jpg",
+        "/serv6.webp"
+    
       ]
     },
     {
@@ -117,8 +111,7 @@ export default function AlbercyLandingPage() {
         "/eng6.webp",
         "/eng7.webp",
         "/eng8.jpg",
-        "/eng9.jpg",
-        "/eng10.jpg"
+        "/eng9.jpg"
       ]
     },
     {

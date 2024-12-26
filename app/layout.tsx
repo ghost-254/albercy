@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Albercy Auto Clinic',
-  description: 'Expert auto repair and maintenance services in Nairobi, Kenya',
+  description: 'No. 1 Expert Auto Repair and Maintenance Services in Nairobi, Kenya',
 }
 
 export default function RootLayout({
