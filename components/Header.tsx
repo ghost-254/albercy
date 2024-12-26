@@ -18,7 +18,7 @@ const Header = () => {
         <nav className="hidden md:block">
           <ul className="flex space-x-4 font-['Orbitron'] text-sm">
             <li><Link href="/" className="hover:text-[#5900ff] transition-colors">Home</Link></li>
-            <li><Link href="#services" className="hover:text-[#5900ff] transition-colors">Services</Link></li>
+            <li><Link href="/#services" className="hover:text-[#5900ff] transition-colors">Services</Link></li>
             <li><Link href="/contact" className="hover:text-[#5900ff] transition-colors">Contact</Link></li>
             <li>
               <Link href="/emergency-services" className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors">
