@@ -2,11 +2,15 @@
 
 import React from 'react'
 import { motion } from "framer-motion"
-import { Battery, Wifi, Cpu, Compass, CircleDot, Car, Cog, Flame, ShoppingCart, Phone, Mail, MapPin, Globe, Clock, Users, Paintbrush, Truck, Wind } from 'lucide-react'
+import { Battery, Wifi, Cpu, Compass, CircleDot, Car, Cog, Flame, ShoppingCart, Phone, Mail, MapPin, Globe, Clock, Users, Paintbrush, Truck, Wind, ChevronRight } from 'lucide-react'
 import { ContactPopup } from '@/components/ContactPopup'
 import { HeroSection } from '@/components/HeroSection'
 import ImageSlider from '@/components/ImageSlider'
+import CarSalesSlider from '@/components/CarSalesSlider'
 import '@/styles/fonts.css'
+import Link from 'next/link'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 
 export default function AlbercyLandingPage() {
   const [isContactPopupOpen, setIsContactPopupOpen] = React.useState(false);
@@ -202,6 +206,20 @@ export default function AlbercyLandingPage() {
     }
   ]
 
+  const carImages = [
+    "/bmw.webp",
+    "/hondo-civic.jpg",
+    "/mustang.webp",
+    "/tesla.webp",
+    "/car5.jpg",
+    "/car1.jpg",
+    "/car2.jpg",
+    "/toyota-corolla.webp",
+    "/car3.jpg",
+    "/car4.jpg",
+    "/car5.jpg",
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white text-gray-800">
       <HeroSection />
@@ -274,7 +292,7 @@ export default function AlbercyLandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="text-center bg-gray-100 py-12 rounded-lg shadow-md"
+          className="text-center bg-gray-100 py-12 rounded-lg shadow-md mb-16"
         >
           <h2 className="text-3xl font-bold mb-8 font-['Orbitron'] text-[#5900ff]">Contact Us</h2>
           <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
@@ -291,6 +309,34 @@ export default function AlbercyLandingPage() {
               <span>Kenyatta Av, Dar es Salaam Rd, Shell Petrol Stn, GPO Nairobi, Kenya</span>
             </div>
           </div>
+        </motion.section>
+
+        <motion.section
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
+          <Card className="overflow-hidden">
+            <CardContent className="p-0">
+              <div className="flex flex-col md:flex-row">
+                <div className="w-full md:w-1/2">
+                  <CarSalesSlider images={carImages} />
+                </div>
+                <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+                  <h3 className="text-2xl font-bold mb-4 font-['Orbitron'] text-[#5900ff]">Explore Our Car Collection</h3>
+                  <p className="text-gray-600 mb-6">
+                    Discover a wide range of quality vehicles at Albercy Auto Clinic. From sleek sedans to robust SUVs, we have the perfect car waiting for you. Our expert team is ready to help you find your dream car.
+                  </p>
+                  <Link href="/car-sales">
+                    <Button className="bg-[#5900ff] hover:bg-[#4600c7] text-white font-bold py-2 px-4 rounded-full inline-flex items-center transition-all duration-300 transform hover:scale-105">
+                      Explore Available Cars
+                      <ChevronRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.section>
       </div>
 

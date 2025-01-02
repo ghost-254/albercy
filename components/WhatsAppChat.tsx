@@ -44,7 +44,7 @@ const WhatsAppChat: React.FC = () => {
       allowEsc={false}
       allowClickAway={false}
       notification={true}
-      notificationSound={true}
+      notificationSound={false}
       notificationLoop={3}
       notificationDelay={10}
       chatboxHeight={420}

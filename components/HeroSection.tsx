@@ -43,7 +43,7 @@ export const HeroSection: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          Experience excellence in automotive care. We're now fully launched and ready to serve you!
+          Experience excellence in automotive care. We've been your trusted partner in automotive care, delivering reliable and expert service every time. From precision repairs to routine maintenance, we’re here to keep you on the road with confidence.
         </motion.p>
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
