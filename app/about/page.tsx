@@ -116,7 +116,7 @@ export default function AboutPage() {
         <ServiceSection
           title="24/7 Emergency Roadside Assistance"
           description="We understand that vehicle emergencies don't follow a schedule. That's why Albercy Auto Clinic offers round-the-clock emergency roadside assistance. Whether you're stuck with a flat tire, dead battery, or any other roadside issue, our team is just a call away, ready to get you back on the road safely."
-          imageSrc="/roadside.jpg"
+          imageSrc="/roadside.webp"
           imageAlt="Emergency Roadside Assistance"
         />
 

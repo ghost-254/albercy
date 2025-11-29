@@ -19,6 +19,7 @@
     "albercy": "file:",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "firebase": "^12.6.0",
     "framer-motion": "^11.12.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.462.0",

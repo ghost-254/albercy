@@ -1,3 +1,5 @@
+//app/admin/signup/page.tsx
+
 'use client'
 
 import React, { useState } from 'react'
@@ -32,7 +34,6 @@ export default function AdminSignupPage() {
       return
     }
 
-    // Here you would typically make an API call to create the admin account
     // For this example, we'll just show a success message
     console.log('Admin signup data:', formData)
     toast.success('Admin account created successfully')

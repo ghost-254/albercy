@@ -1,3 +1,5 @@
+//app/admin/post-car/page.tsx
+
 'use client'
 
 import React, { useState } from 'react'
