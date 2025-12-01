@@ -13,12 +13,16 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-// Initialize a single app instance (safe to call on server or client)
+// --- INTERNAL: ENSURES SINGLE APP INSTANCE ---
 function getOrInitApp(): FirebaseApp {
-  return getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+  return getApps().length === 0
+    ? initializeApp(firebaseConfig)
+    : getApps()[0]
 }
 
-/** Non-nullable helpers (call these from your code) */
+// --- PUBLIC NON-NULLABLE GETTERS ---
+// These are safe to import from anywhere in your project.
+
 export function getAppInstance(): FirebaseApp {
   return getOrInitApp()
 }
@@ -31,17 +35,23 @@ export function getDbInstance(): Firestore {
   return getFirestore(getOrInitApp())
 }
 
-/**
- * getStorageInstance
- * - Firebase Storage is a browser API (depends on window). Calling this on the server (SSR)
- *   will throw a helpful error — this forces callers to only use storage on the client.
- */
 export function getStorageInstance(): FirebaseStorage {
   if (typeof window === "undefined") {
-    throw new Error("Firebase Storage is only available on the client (window is undefined).")
+    throw new Error("Firebase Storage is only available on the client side.")
   }
   return getStorage(getOrInitApp())
 }
 
-// Keep a default export if you prefer importing default app
-export default getOrInitApp()
+// --- OPTIONAL NAMED EXPORTS FOR CONVENIENCE ---
+// These lazily resolve using the getters above.
+// They are NOT null and will not cause TS errors.
+
+export const app = getAppInstance()
+export const auth = getAuthInstance()
+export const db = getDbInstance()
+
+// ❗ Storage must stay in a function because Next.js renders on SSR first.
+// We export the getter instead of the value.
+export { getStorageInstance as storage }
+
+export default app
