@@ -1,9 +1,8 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { motion } from "framer-motion"
 import { toast } from "react-toastify"
 import { Button } from "@/components/ui/button"
@@ -13,16 +12,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useAuth } from "@/contexts/AuthContext"
 import { Loader2, ShieldCheck } from "lucide-react"
 
-export default function AdminSignupPage() {
+export default function AdminLoginPage() {
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
-    confirmPassword: "",
   })
   const [loading, setLoading] = useState(false)
-  const { signUp } = useAuth()
+  const { login, user, loading: authLoading } = useAuth()
   const router = useRouter()
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.push("/admin/dashboard")
+    }
+  }, [user, authLoading, router])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -34,35 +37,37 @@ export default function AdminSignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords don't match")
-      return
-    }
-
-    if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters")
-      return
-    }
-
     setLoading(true)
 
     try {
-      await signUp(formData.email, formData.password, formData.username)
-      toast.success("Admin account created successfully!")
+      await login(formData.email, formData.password)
+      toast.success("Login successful!")
       router.push("/admin/dashboard")
     } catch (error: any) {
-      console.error("Signup error:", error)
-      if (error.code === "auth/email-already-in-use") {
-        toast.error("Email already in use")
-      } else if (error.code === "auth/weak-password") {
-        toast.error("Password is too weak")
+      console.error("Login error:", error)
+      if (error.code === "auth/user-not-found") {
+        toast.error("No account found with this email")
+      } else if (error.code === "auth/wrong-password") {
+        toast.error("Incorrect password")
+      } else if (error.code === "auth/invalid-credential") {
+        toast.error("Invalid email or password")
+      } else if (error.code === "auth/invalid-email") {
+        toast.error("Invalid email address")
       } else {
-        toast.error(error.message || "Failed to create account")
+        toast.error(error.message || "Failed to login")
       }
     } finally {
       setLoading(false)
     }
+  }
+
+  // Show loading while checking auth state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-white">
+        <Loader2 className="h-12 w-12 animate-spin text-[#5900ff]" />
+      </div>
+    )
   }
 
   return (
@@ -74,24 +79,11 @@ export default function AdminSignupPage() {
               <div className="mx-auto mb-4 bg-[#5900ff]/10 p-3 rounded-full w-fit">
                 <ShieldCheck className="h-8 w-8 text-[#5900ff]" />
               </div>
-              <CardTitle className="text-2xl font-bold font-['Orbitron'] text-[#5900ff]">Admin Signup</CardTitle>
-              <CardDescription>Create an admin account to manage vehicle listings</CardDescription>
+              <CardTitle className="text-2xl font-bold font-['Orbitron'] text-[#5900ff]">Admin Login</CardTitle>
+              <CardDescription>Sign in to access the admin dashboard</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                    disabled={loading}
-                    placeholder="Enter your username"
-                  />
-                </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -118,36 +110,20 @@ export default function AdminSignupPage() {
                     placeholder="••••••••"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    disabled={loading}
-                    placeholder="••••••••"
-                  />
-                </div>
                 <Button type="submit" className="w-full bg-[#5900ff] hover:bg-[#4700cc]" disabled={loading}>
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Account...
+                      Signing In...
                     </>
                   ) : (
-                    "Sign Up"
+                    "Login"
                   )}
                 </Button>
               </form>
-              <div className="mt-6 text-center text-sm text-gray-600">
-                Already have an account?{" "}
-                <Link href="/admin/login" className="text-[#5900ff] hover:underline font-medium">
-                  Login here
-                </Link>
-              </div>
+              <p className="mt-6 text-center text-sm text-gray-500">
+                Admin access only. Contact support if you need access.
+              </p>
             </CardContent>
           </Card>
         </motion.div>
