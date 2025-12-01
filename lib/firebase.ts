@@ -1,3 +1,4 @@
+// firebase.ts
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app"
 import { getAuth, type Auth } from "firebase/auth"
 import { getFirestore, type Firestore } from "firebase/firestore"
@@ -12,22 +13,35 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-let app: FirebaseApp | null = null
-let auth: Auth | null = null
-let db: Firestore | null = null
-let storage: FirebaseStorage | null = null
-
-// Only initialize on client side
-if (typeof window !== "undefined") {
-  try {
-    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
-    auth = getAuth(app)
-    db = getFirestore(app)
-    storage = getStorage(app) // Initialize Storage
-  } catch (error) {
-    console.error("Firebase initialization error:", error)
-  }
+// Initialize a single app instance (safe to call on server or client)
+function getOrInitApp(): FirebaseApp {
+  return getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
 }
 
-export { auth, db, storage }
-export default app
+/** Non-nullable helpers (call these from your code) */
+export function getAppInstance(): FirebaseApp {
+  return getOrInitApp()
+}
+
+export function getAuthInstance(): Auth {
+  return getAuth(getOrInitApp())
+}
+
+export function getDbInstance(): Firestore {
+  return getFirestore(getOrInitApp())
+}
+
+/**
+ * getStorageInstance
+ * - Firebase Storage is a browser API (depends on window). Calling this on the server (SSR)
+ *   will throw a helpful error — this forces callers to only use storage on the client.
+ */
+export function getStorageInstance(): FirebaseStorage {
+  if (typeof window === "undefined") {
+    throw new Error("Firebase Storage is only available on the client (window is undefined).")
+  }
+  return getStorage(getOrInitApp())
+}
+
+// Keep a default export if you prefer importing default app
+export default getOrInitApp()
